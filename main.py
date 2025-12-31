@@ -3,22 +3,31 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pathlib import Path
+import os
+from pathlib import Path
 
-# Base directory (stable with Docker & local)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = Path(__file__).resolve().parent
+
+# Add logging
+print(f"BASE_DIR: {BASE_DIR}")
+print(f"Static directory exists: {(BASE_DIR / 'static').exists()}")
+print(f"CSS file exists: {(BASE_DIR / 'static' / 'style.css').exists()}")
+print(f"Current working directory: {os.getcwd()}")
+print(f"Files in static: {list((BASE_DIR / 'static').iterdir()) if (BASE_DIR / 'static').exists() else 'Directory not found'}")
 
 app = FastAPI()
 
-# Static files
+# Static files with absolute path
 app.mount(
     "/static",
-    StaticFiles(directory=os.path.join(BASE_DIR, "static")),
+    StaticFiles(directory=str(BASE_DIR / "static")),
     name="static"
 )
 
-# Templates
+# Templates with absolute path
 templates = Jinja2Templates(
-    directory=os.path.join(BASE_DIR, "templates")
+    directory=str(BASE_DIR / "templates")
 )
 
 
